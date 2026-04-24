@@ -23,6 +23,12 @@ function plotPixel(x, y, color = "#ffffff") {
 }
 
 /**
+ * Algoritmo de Punto Medio para circunferencias.
+ * Dibuja una circunferencia completa usando simetría de 8 octantes.
+ * El parámetro de decisión 'p' determina si el siguiente píxel
+ * va al este o al sureste, actualizándose como:
+ *   - Si p < 0:  p = p + 2x + 3         (píxel al este)
+ *   - Si p >= 0: p = p + 2x - 2y + 5    (píxel al sureste, decrementa y)
  * @param {number} centerX - Centro X de la circunferencia
  * @param {number} centerY - Centro Y de la circunferencia
  * @param {number} r - Radio de la circunferencia
@@ -62,6 +68,12 @@ function midpointCircle(centerX, centerY, r, color = "#444444") {
 }
 
 /**
+ * Algoritmo de Bresenham para líneas.
+ * Funciona para cualquier pendiente (positiva, negativa, mayor a 1).
+ * El parámetro de decisión 'p' se actualiza como:
+ *   - Si p < 0:  p = p + 2*dy           (sin incremento en el eje lento)
+ *   - Si p >= 0: p = p + 2*dy - 2*dx    (con incremento en el eje lento)
+ * Se intercambian los ejes según si la pendiente es mayor o menor a 1.
  * @param {number} x0 - X inicial
  * @param {number} y0 - Y inicial
  * @param {number} x1 - X final
@@ -159,7 +171,7 @@ function drawPolygon(cx, cy, radius, sides, color) {
 }
 
 /**
- * Genera un número entero aleatorio entre min y max (inclusive).
+ * Genera un número entero aleatorio entre min y max.
  */
 function randInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
