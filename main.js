@@ -103,6 +103,86 @@ function bresenhamLine(x0, y0, x1, y1, color = "#ffffff") {
   }
 }
 
-// --- Prueba temporal 
-bresenhamLine(100, 100, 700, 700, "#00ff00");
-bresenhamLine(700, 100, 100, 700, "#00ff00");
+
+/**
+ 
+ * @param {number} r - Radio de la órbita
+ * @param {number} n - Cantidad de polígonos
+ * @returns {Array} Array de objetos {x, y} con los centros
+ */
+function getOrbitalPositions(r, n) {
+  const positions = [];
+  for (let i = 0; i < n; i++) {
+    const angle = (2 * Math.PI * i) / n; // Ángulo equidistante
+    const x = CX + r * Math.cos(angle);
+    const y = CY + r * Math.sin(angle);
+    positions.push({ x, y });
+  }
+  return positions;
+}
+
+/**
+ * Calcula los vértices de un polígono regular.
+ * @param {number} cx - Centro X del polígono
+ * @param {number} cy - Centro Y del polígono
+ * @param {number} radius - Radio (tamaño) del polígono
+ * @param {number} sides - Número de lados
+ * @returns {Array} Array de objetos {x, y} con los vértices
+ */
+function getPolygonVertices(cx, cy, radius, sides) {
+  const vertices = [];
+  for (let i = 0; i < sides; i++) {
+    const angle = (2 * Math.PI * i) / sides - Math.PI / 2;
+    vertices.push({
+      x: cx + radius * Math.cos(angle),
+      y: cy + radius * Math.sin(angle),
+    });
+  }
+  return vertices;
+}
+
+/**
+ * Dibuja un polígono regular usando Bresenham para cada lado.
+ * @param {number} cx - Centro X
+ * @param {number} cy - Centro Y
+ * @param {number} radius - Tamaño del polígono
+ * @param {number} sides - Número de lados
+ * @param {string} color - Color
+ */
+function drawPolygon(cx, cy, radius, sides, color) {
+  const vertices = getPolygonVertices(cx, cy, radius, sides);
+  for (let i = 0; i < vertices.length; i++) {
+    const current = vertices[i];
+    const next = vertices[(i + 1) % vertices.length];
+    bresenhamLine(current.x, current.y, next.x, next.y, color);
+  }
+}
+
+/**
+ * Genera un número entero aleatorio entre min y max (inclusive).
+ */
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// ===================== PARÁMETROS PRINCIPALES =====================
+const R = randInt(150, 280);   // Radio de la órbita
+const N = randInt(4, 10);      // Número de polígonos
+const K = randInt(3, 8);       // Lados de cada polígono
+const polyRadius = randInt(20, 45); // Tamaño de cada polígono
+
+// Paleta de colores para los polígonos
+const colors = ["#e94560", "#0f3460", "#e2b714", "#16213e", "#a8ff78", "#78ffd6", "#f7971e", "#ffd200", "#f953c6", "#b91d73"];
+
+// ===================== DIBUJO PRINCIPAL =====================
+// 1. Dibujar la órbita (tenue)
+midpointCircle(CX, CY, R, "#2a2a2a");
+
+// 2. Obtener posiciones de los polígonos sobre la órbita
+const centers = getOrbitalPositions(R, N);
+
+// 3. Dibujar cada polígono en su posición orbital
+centers.forEach((center, i) => {
+  const color = colors[i % colors.length];
+  drawPolygon(center.x, center.y, polyRadius, K, color);
+});
