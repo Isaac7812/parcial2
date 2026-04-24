@@ -61,5 +61,48 @@ function midpointCircle(centerX, centerY, r, color = "#444444") {
   }
 }
 
-// - Prueba, se borrara despues
-midpointCircle(CX, CY, 250, "#444444");
+/**
+ * @param {number} x0 - X inicial
+ * @param {number} y0 - Y inicial
+ * @param {number} x1 - X final
+ * @param {number} y1 - Y final
+ * @param {string} color - Color del trazo
+ */
+function bresenhamLine(x0, y0, x1, y1, color = "#ffffff") {
+  let dx = Math.abs(x1 - x0);
+  let dy = Math.abs(y1 - y0);
+
+  let sx = x0 < x1 ? 1 : -1; // Dirección en X
+  let sy = y0 < y1 ? 1 : -1; // Dirección en Y
+
+  let p = 2 * dy - dx; // Parámetro de decisión inicial
+
+  // Si la pendiente es mayor a 1, se intercambian los roles de x e y
+  const steep = dy > dx;
+  if (steep) {
+    [dx, dy] = [dy, dx];
+    p = 2 * dy - dx;
+  }
+
+  let x = x0;
+  let y = y0;
+
+  for (let i = 0; i <= dx; i++) {
+    plotPixel(x, y, color);
+
+    if (p >= 0) {
+      if (steep) x += sx;
+      else       y += sy;
+      p -= 2 * dx;
+    }
+
+    if (steep) y += sy;
+    else       x += sx;
+
+    p += 2 * dy;
+  }
+}
+
+// --- Prueba temporal 
+bresenhamLine(100, 100, 700, 700, "#00ff00");
+bresenhamLine(700, 100, 100, 700, "#00ff00");
